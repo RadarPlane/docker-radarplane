@@ -7,10 +7,10 @@ source /opt/healthchecks-framework/healthchecks.sh
 
 EXITCODE=0
 
-if [ -f "/run/adsbexchange-feed/aircraft.json" ]; then
+if [ -f "/run/radarplane-feed/aircraft.json" ]; then
 
     # get latest timestamp of readsb json update
-    TIMESTAMP_LAST_READSB_UPDATE=$(jq '.now' < /run/adsbexchange-feed/aircraft.json)
+    TIMESTAMP_LAST_READSB_UPDATE=$(jq '.now' < /run/radarplane-feed/aircraft.json)
 
     # get current timestamp
     TIMESTAMP_NOW=$(date +"%s.%N")
@@ -18,14 +18,14 @@ if [ -f "/run/adsbexchange-feed/aircraft.json" ]; then
     # makse sure readsb has updated json in past 60 seconds
     TIMEDELTA=$(echo "$TIMESTAMP_NOW - $TIMESTAMP_LAST_READSB_UPDATE" | bc)
     if [ "$(echo "$TIMEDELTA" \< 60 | bc)" -ne 1 ]; then
-        echo "adsbexchange-feed last updated: ${TIMESTAMP_LAST_READSB_UPDATE}, now: ${TIMESTAMP_NOW}, delta: ${TIMEDELTA}. UNHEALTHY"
+        echo "radarplane-feed last updated: ${TIMESTAMP_LAST_READSB_UPDATE}, now: ${TIMESTAMP_NOW}, delta: ${TIMEDELTA}. UNHEALTHY"
         EXITCODE=1
     else
-        echo "adsbexchange-feed last updated: ${TIMESTAMP_LAST_READSB_UPDATE}, now: ${TIMESTAMP_NOW}, delta: ${TIMEDELTA}. HEALTHY"
+        echo "radarplane-feed last updated: ${TIMESTAMP_LAST_READSB_UPDATE}, now: ${TIMESTAMP_NOW}, delta: ${TIMEDELTA}. HEALTHY"
     fi
 
     # # get number of aircraft
-    # NUM_AIRCRAFT=$(jq '.aircraft | length' < /run/adsbexchange-feed/aircraft.json)
+    # NUM_AIRCRAFT=$(jq '.aircraft | length' < /run/radarplane-feed/aircraft.json)
     # if [ "$NUM_AIRCRAFT" -lt 1 ]; then
     #     echo "total aircraft: $NUM_AIRCRAFT. UNHEALTHY"
     #     EXITCODE=1
@@ -35,7 +35,7 @@ if [ -f "/run/adsbexchange-feed/aircraft.json" ]; then
 
 else
 
-    echo "WARNING: Cannot find /run/adsbexchange-feed/aircraft.json, so skipping some checks."
+    echo "WARNING: Cannot find /run/radarplane-feed/aircraft.json, so skipping some checks."
 
 fi
 
@@ -70,8 +70,8 @@ else
     EXITCODE=1
 fi
 
-# death count for adsbexchange-feed
-SERVICEDIR=/run/s6/services/adsbexchange-feed
+# death count for radarplane-feed
+SERVICEDIR=/run/s6/services/radarplane-feed
 SERVICENAME=$(basename "${SERVICEDIR}")
 # shellcheck disable=SC2126
 SERVICE_DEATHS=$(s6-svdt "${SERVICEDIR}" | grep -v "exitcode 0" | wc -l)
@@ -83,8 +83,8 @@ else
 fi
 s6-svdt-clear "${SERVICEDIR}"
 
-# death count for adsbexchange-stats
-SERVICEDIR=/run/s6/services/adsbexchange-stats
+# death count for radarplane-stats
+SERVICEDIR=/run/s6/services/radarplane-stats
 SERVICENAME=$(basename "${SERVICEDIR}")
 # shellcheck disable=SC2126
 SERVICE_DEATHS=$(s6-svdt "${SERVICEDIR}" | grep -v "exitcode 0" | wc -l)
