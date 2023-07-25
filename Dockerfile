@@ -67,7 +67,7 @@ RUN set -x && \
     popd && \
     ldconfig && \
     # radarplane-stats
-    git clone --depth 1 'https://github.com/adsbxchange/radarplane-stats.git' /src/radarplane-stats && \
+    git clone --depth 1 'https://github.com/RadarPlane/radarplane-stats.git' /src/radarplane-stats && \
     pushd /src/radarplane-stats && \
     echo "radarplane-stats $(git log | head -1)" >> /VERSIONS && \
     mv /src/radarplane-stats/json-status /usr/local/bin/json-status && \
