@@ -20,6 +20,7 @@ exec \
   --net-bo-port 30005 \
   --stats-every="${LOG_INTERVAL}" \
   --write-json="${ADSBX_JSON_PATH}" \
+  --uuid-file="/boot/radarplane-uuid" \
   2>&1 | stdbuf -o0 sed --unbuffered '/^$/d' | mawk -W interactive '{print "[radarplane-feed] " $0}'
 
   # stdbuf -o0 sed --unbuffered '/^$/d'  --  (remove blank lines from output)
